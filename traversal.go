@@ -4,19 +4,19 @@ import "errors"
 
 var Nil = errors.New("unexpected nil returned")
 
-type traversal struct {
+type Traversal struct {
 	f []TraversalFunc
 }
 
-func Traversal(f ...TraversalFunc) *traversal {
-	return &traversal{f}
+func NewTraversal(f ...TraversalFunc) *Traversal {
+	return &Traversal{f}
 }
 
-func (t *traversal) Get(m interface{}) (*Value, error) {
+func (t *Traversal) Get(m interface{}) (*Value, error) {
 	return t.access(m)
 }
 
-func (t *traversal) Set(m interface{}, s setter, val interface{}) error {
+func (t *Traversal) Set(m interface{}, s setter, val interface{}) error {
 	v, err := t.access(m)
 	if err != nil {
 		return err
@@ -27,14 +27,14 @@ func (t *traversal) Set(m interface{}, s setter, val interface{}) error {
 	return nil
 }
 
-func (t *traversal) Branch(f ...TraversalFunc) *traversal {
+func (t *Traversal) Branch(f ...TraversalFunc) *Traversal {
 	fs := make([]TraversalFunc, 0, 0)
 	fs = append(fs, t.f...)
 	fs = append(fs, f...)
-	return &traversal{fs}
+	return &Traversal{fs}
 }
 
-func (t *traversal) access(m interface{}) (*Value, error) {
+func (t *Traversal) access(m interface{}) (*Value, error) {
 	var err error
 	p := &Value{m}
 	for _, fn := range t.f {
