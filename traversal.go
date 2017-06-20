@@ -16,7 +16,7 @@ func (t *Traversal) Get(m interface{}) (*Value, error) {
 	return t.access(m)
 }
 
-func (t *Traversal) Set(m interface{}, s setter, val interface{}) error {
+func (t *Traversal) Set(m interface{}, s Setter, val interface{}) error {
 	v, err := t.access(m)
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func (t *Traversal) access(m interface{}) (*Value, error) {
 
 type TraversalFunc func(*Value) (*Value, error)
 
-func Get(g getter) TraversalFunc {
+func Get(g Getter) TraversalFunc {
 	return func(v *Value) (*Value, error) {
 		v, err := g.get(v)
 		if err != nil {
@@ -61,7 +61,7 @@ func Get(g getter) TraversalFunc {
 	}
 }
 
-func GetOrDefault(g getter, def interface{}) TraversalFunc {
+func GetOrDefault(g Getter, def interface{}) TraversalFunc {
 	return func(v *Value) (*Value, error) {
 		v, err := g.get(v)
 		if err != nil {
@@ -74,7 +74,7 @@ func GetOrDefault(g getter, def interface{}) TraversalFunc {
 	}
 }
 
-func GetOrCreate(g getsetter, factory Factory) TraversalFunc {
+func GetOrCreate(g Getsetter, factory Factory) TraversalFunc {
 	return func(v *Value) (*Value, error) {
 		val, err := g.get(v)
 		if err != nil {

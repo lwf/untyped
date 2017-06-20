@@ -2,17 +2,17 @@ package untyped
 
 import "fmt"
 
-type getter interface {
+type Getter interface {
 	get(*Value) (*Value, error)
 }
 
-type setter interface {
+type Setter interface {
 	set(*Value, interface{}) (*Value, error)
 }
 
-type getsetter interface {
-	getter
-	setter
+type Getsetter interface {
+	Getter
+	Setter
 }
 
 type mapGetSetter struct {
@@ -36,7 +36,7 @@ func (mg *mapGetSetter) set(v *Value, val interface{}) (*Value, error) {
 	return &Value{m[mg.key]}, nil
 }
 
-func MapKey(key string) getsetter {
+func MapKey(key string) Getsetter {
 	return &mapGetSetter{key}
 }
 
@@ -64,6 +64,6 @@ func (a *arrayGetSetter) set(v *Value, val interface{}) (*Value, error) {
 	return &Value{arr[a.idx]}, nil
 }
 
-func ArrayIndex(i int) getsetter {
+func ArrayIndex(i int) Getsetter {
 	return &arrayGetSetter{i}
 }
